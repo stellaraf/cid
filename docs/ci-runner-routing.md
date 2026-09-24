@@ -1,3 +1,3 @@
-# CI runner routing
+# CI runner routing and retention
 
-Linux CI uses disposable AWS CodeBuild runners in the isolated public-repository pool. Public pull request code never runs on the persistent private EC2 runner. Existing macOS and Windows jobs retain their native operating systems. Dependency caches remain repository scoped. Tag-only release workflows are not dispatched by this infrastructure update.
+Linux CI runs on disposable isolated public AWS CodeBuild workers. Native macOS and Windows jobs retain their platforms. CI build artifacts use the private public-repository S3 bucket, scoped by repository, run, attempt, and commit. Build artifacts expire after 30 days; dependency caches expire after 14 days. Published GitHub Release assets keep their release lifecycle.

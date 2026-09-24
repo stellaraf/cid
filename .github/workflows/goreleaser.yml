@@ -29,8 +29,7 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: rmon-node-setup
-          path: dist/*
+      - name: Store build artifacts in S3 (30 days)
+        env:
+          ARTIFACT_DESTINATION: s3://stellaraf-public-ci-961341522852-us-west-1/actions/${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}/${{ github.sha }}/dist/
+        run: aws s3 cp dist/ "$ARTIFACT_DESTINATION" --recursive --only-show-errors
