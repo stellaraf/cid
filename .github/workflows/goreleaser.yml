@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: write
+
 jobs:
   goreleaser:
     runs-on: codebuild-stellaraf-actions-public-${{ github.run_id }}-${{ github.run_attempt }}
@@ -12,22 +15,22 @@ jobs:
       GOPATH: /tmp/stellar-go
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: 1.17
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v6
         with:
-          version: latest
-          args: release --rm-dist
+          version: v1.26.2
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload assets
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: rmon-node-setup
           path: dist/*
