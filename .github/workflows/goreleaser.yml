@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   goreleaser:
-    runs-on: codebuild-stellaraf-actions-public-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on: ubuntu-latest
     env:
       GOPATH: /tmp/stellar-go
     steps:
@@ -29,7 +29,10 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Store build artifacts in S3 (30 days)
-        env:
-          ARTIFACT_DESTINATION: s3://stellaraf-public-ci-961341522852-us-west-1/actions/${{ github.repository }}/${{ github.run_id }}/${{ github.run_attempt }}/${{ github.sha }}/dist/
-        run: aws s3 cp dist/ "$ARTIFACT_DESTINATION" --recursive --only-show-errors
+      - name: Store build artifacts (30 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.run_attempt }}
+          path: dist/
+          retention-days: 30
+          if-no-files-found: error
